@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import MenuIcon from "@material-ui/icons/Menu";
 import "./Header.css";
-import PenColorPalette from "../Panel/PenColorPalette";
-import PenPointer from "../Panel/PenPointer";
 
 class Header extends Component {
   state = {
@@ -14,10 +12,6 @@ class Header extends Component {
   };
   render() {
     const onHover = this.props.stateComponents.onHover;
-    const penColors = this.props.penColors;
-    const setSelectedPenColor = this.props.setSelectedPenColor;
-    const selectedPenColor =
-      this.props.stateComponents.PenFeatures.selectedPenColor;
 
     return (
       <div className="header-container">
@@ -28,22 +22,6 @@ class Header extends Component {
               ? this.props.stateComponents.hoveredComponent
               : this.props.stateComponents.selectedComponent}
           </p>
-          <div className="pen-color-pallete">
-            <PenColorPalette
-              penColors={penColors}
-              setSelectedPenColor={setSelectedPenColor}
-              setPenColor={this.setPenColor}
-              selectedPenColor={
-                this.props.stateComponents.PenFeatures.selectedPenColor
-              }
-            />
-          </div>
-          <div className="pen-pointer">
-            <PenPointer
-              selectedPenColor={this.state.selectedPenColor}
-              selectedPointerSize={10.5}
-            />
-          </div>
         </div>
       </div>
     );

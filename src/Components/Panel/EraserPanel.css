@@ -1,0 +1,59 @@
+.eraser-components {
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.8;
+  position: absolute;
+  height: 6rem;
+  width: 15rem;
+  left: 4rem;
+  bottom: 0.5rem;
+  border-radius: 40px;
+}
+.eraser-components > span {
+  opacity: 0.8;
+  background-color: black;
+  border-radius: 50%;
+  margin: auto;
+  cursor: pointer;
+}
+.eraser-components > span:hover {
+  opacity: 1;
+}
+.delete-all-outer {
+  position: absolute;
+  opacity: 0.7;
+  top: 3rem;
+  left: 5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+}
+.delete-all-inner {
+  position: absolute;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  background-color: rgb(217, 233, 196);
+  width: 1.2rem;
+  height: 1.2rem;
+}
+.hovered:hover {
+  opacity: 1;
+}
+.delete-all-inner > span {
+  position: absolute;
+  opacity: 0.8;
+  background-color: black;
+  width: 0.7rem;
+  border-radius: 50%;
+  height: 0.7rem;
+}

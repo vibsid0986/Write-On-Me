@@ -3,6 +3,7 @@ import "./ComponentPanel.css";
 import ControlCameraIcon from "@material-ui/icons/ControlCamera";
 import TextFieldsIcon from "@material-ui/icons/TextFields";
 import PenPanel from "./PenPanel";
+import EraserPanel from "./EraserPanel";
 
 class ComponentPanel extends Component {
   constructor() {
@@ -11,7 +12,9 @@ class ComponentPanel extends Component {
       hoveredComponent: "",
       selectedComponent: "Select",
       EnablePenProps: false,
-      timerId: -1,
+      EnableEraserProps: false,
+      timerIdPenPallete: -1,
+      timerIdEraserPanel: -1,
     };
   }
   setMouseHoverState = (variable) => {
@@ -60,7 +63,7 @@ class ComponentPanel extends Component {
                 this.setMouseHoverState(this.state.selectedComponent);
                 this.setState({ EnablePenProps: false });
               }, 500);
-              this.setState({ timerId: TIMER });
+              this.setState({ timerIdPenPallete: TIMER });
             }}
             onClick={() => {
               this.setSelectedComponentState(this.props.componentNames[1]);
@@ -69,7 +72,7 @@ class ComponentPanel extends Component {
             <PenPanel
               setSelectedPenColor={this.props.setSelectedPenColor}
               penColors={this.props.penColors}
-              timerId={this.state.timerId}
+              timerId={this.state.timerIdPenPallete}
               enablePenProps={this.state.EnablePenProps}
               penPointerSize={this.props.penPointerSize}
               setSelectedPointerSize={this.props.setSelectedPointerSize}
@@ -79,14 +82,40 @@ class ComponentPanel extends Component {
           </div>
           <div
             className="item-cont"
+            onMouseEnter={() => {
+              this.setMouseHoverState(this.props.componentNames[2]);
+              this.setState({ EnableEraserProps: true });
+            }}
+            onMouseLeave={() => {
+              const TIMER = setTimeout(() => {
+                this.setMouseHoverState(this.state.selectedComponent);
+                this.setState({ EnableEraserProps: false });
+              }, 500);
+              this.setState({ timerIdEraserPanel: TIMER });
+            }}
+            onClick={() => {
+              this.setSelectedComponentState(this.props.componentNames[2]);
+            }}
+          >
+            <EraserPanel
+              timerId={this.state.timerIdEraserPanel}
+              EnableEraserProps={this.state.EnableEraserProps}
+              setEraseAll={this.props.setEraseAll}
+              setEraserProps={this.props.setEraserProps}
+              eraserSizes={this.props.eraserSizes}
+            />
+          </div>
+
+          <div
+            className="item-cont"
             onMouseEnter={() =>
-              this.setMouseHoverState(this.props.componentNames[2])
+              this.setMouseHoverState(this.props.componentNames[3])
             }
             onMouseLeave={() =>
               this.setMouseHoverState(this.state.selectedComponent)
             }
             onClick={() => {
-              this.setSelectedComponentState(this.props.componentNames[2]);
+              this.setSelectedComponentState(this.props.componentNames[3]);
             }}
           >
             <TextFieldsIcon fontSize="large" />

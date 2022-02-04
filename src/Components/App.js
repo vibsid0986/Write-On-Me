@@ -14,8 +14,47 @@ class App extends Component {
         selectedPenColor: "black",
         selectedPointerSize: 2,
       },
+      EraserFeatures: {
+        EraserSymbol: "M",
+        EraserSize: "1.5rem",
+        DeleteAll: false,
+      },
     };
   }
+
+  setEraserProps = (size, symbol) => {
+    this.setState(
+      {
+        EraserFeatures: {
+          ...this.state.EraserFeatures,
+          EraserSize: size,
+          EraserSymbol: symbol,
+        },
+      },
+      () => {
+        console.log(
+          "Eraser Size Selected--> ",
+          this.state.EraserFeatures.EraserSize,
+          "Eraser Symbol Selected--> ",
+          this.state.EraserFeatures.EraserSymbol
+        );
+      }
+    );
+  };
+
+  setEraseAll = () => {
+    this.setState(
+      {
+        EraserFeatures: {
+          ...this.state.EraserFeatures,
+          DeleteAll: true,
+        },
+      },
+      () => {
+        console.log("Must Perform Something to delete everything");
+      }
+    );
+  };
 
   setSelectedPenColor = (value) => {
     this.setState(
@@ -50,8 +89,26 @@ class App extends Component {
   };
 
   render() {
-    const componentNames = ["Select", "Pen", "Text"];
+    const componentNames = ["Select", "Pen", "Eraser", "Text"];
     const colors = ["red", "green", "gold", "blue", "black"];
+    const eraserSizes = {
+      Small: {
+        size: "1rem",
+        symbol: "S",
+      },
+      Medium: {
+        size: "1.5rem",
+        symbol: "M",
+      },
+      Large: {
+        size: "2rem",
+        symbol: "L",
+      },
+      XtraLarge: {
+        size: "3rem",
+        symbol: "XL",
+      },
+    };
     const penPointerSize = {
       min: 0,
       max: 10,
@@ -75,6 +132,9 @@ class App extends Component {
           selectedPointerSize={this.state.PenFeatures.selectedPointerSize}
           setSelectedPointerSize={this.setSelectedPointerSize}
           selectedPenColor={this.state.PenFeatures.selectedPenColor}
+          setEraseAll={this.setEraseAll}
+          setEraserProps={this.setEraserProps}
+          eraserSizes={eraserSizes}
         />
       </div>
     );
