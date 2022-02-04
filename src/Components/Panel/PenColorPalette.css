@@ -1,0 +1,22 @@
+.Pen-Color-Palette {
+  opacity: 0.8;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 4rem;
+  bottom: 2rem;
+  height: 2rem;
+  width: 10rem;
+  border-radius: 40px;
+  background-color: rgb(192, 192, 192);
+  border: 1px dotted black;
+}
+.Pen-Color-Palette > span {
+  background-color: black;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  margin: auto;
+  cursor: pointer;
+}

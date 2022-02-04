@@ -1,0 +1,11 @@
+.Pen-Pointer-Selector {
+  opacity: 0.8;
+  position: absolute;
+  border-radius: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 5rem;
+  width: 8rem;
+  height: 2rem;
+}

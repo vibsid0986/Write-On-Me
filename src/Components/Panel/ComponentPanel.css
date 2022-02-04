@@ -1,0 +1,26 @@
+.panel-cont {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  /* background-color: rgb(250, 231, 234); */
+  background-color: rgb(217, 233, 196);
+  position: relative;
+  top: 5rem;
+  left: 1rem;
+  width: 3.5rem;
+  height: 30rem;
+}
+.item-cont {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  background-color: rgb(190, 207, 167);
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px,
+    rgba(0, 0, 0, 0.22) 0px 15px 12px;
+  left: 0.45rem;
+  top: 1rem;
+  width: auto;
+  height: 2.25rem;
+  border-radius: 50%;
+  padding: 0.5rem;
+}
