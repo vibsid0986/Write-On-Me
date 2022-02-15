@@ -37,7 +37,42 @@ class ComponentPanel extends Component {
     // const selectedPenColor = this.props.selectedPenColor;
     return (
       <div>
-        <div className="panel-cont">
+        <div
+          className="panel-cont"
+          onMouseDown={(e) => {
+            if (this.state.EnablePenProps) {
+              return;
+            }
+            if (
+              this.state.selectedComponent === this.props.componentNames[1] ||
+              this.state.selectedComponent === this.props.componentNames[2]
+            ) {
+              this.props.startDrawing(e);
+            }
+          }}
+          onMouseUp={() => {
+            if (this.state.EnablePenProps) {
+              return;
+            }
+            if (
+              this.state.selectedComponent === this.props.componentNames[1] ||
+              this.state.selectedComponent === this.props.componentNames[2]
+            ) {
+              this.props.finishDrawing();
+            }
+          }}
+          onMouseMove={(e) => {
+            if (this.state.EnablePenProps) {
+              return;
+            }
+            if (
+              this.state.selectedComponent === this.props.componentNames[1] ||
+              this.state.selectedComponent === this.props.componentNames[2]
+            ) {
+              this.props.draw(e);
+            }
+          }}
+        >
           <div
             className="item-cont"
             onMouseEnter={() => {

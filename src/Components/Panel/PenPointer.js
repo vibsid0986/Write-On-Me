@@ -7,8 +7,8 @@ class PenPointer extends Component {
         <span
           style={{
             backgroundColor: this.props.selectedPenColor,
-            width: this.props.selectedPointerSize / 2 + 0.5 + "rem",
-            height: this.props.selectedPointerSize / 2 + 0.5 + "rem",
+            width: (this.props.selectedPointerSize / 2 + 0.5) * 4,
+            height: (this.props.selectedPointerSize / 2 + 0.5) * 4,
           }}
         ></span>
       </div>

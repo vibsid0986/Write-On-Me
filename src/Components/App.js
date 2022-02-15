@@ -3,6 +3,9 @@ import Header from "./Header/Header";
 import ComponentPanel from "./Panel/ComponentPanel";
 import "./App.css";
 
+const canvasRef = React.createRef(null);
+const contextRef = React.createRef(null);
+
 class App extends Component {
   constructor() {
     super();
@@ -19,8 +22,66 @@ class App extends Component {
         EraserSize: "1.5rem",
         DeleteAll: false,
       },
+      isDrawing: false,
     };
   }
+  changepenFeatures = () => {
+    contextRef.current.lineWidth =
+      (this.state.PenFeatures.selectedPointerSize / 2 + 0.5) * 2;
+    contextRef.current.strokeStyle = this.state.PenFeatures.selectedPenColor;
+  };
+  componentDidMount() {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    // ctx.scale(2, 2);
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = this.state.PenFeatures.selectedPenColor;
+    ctx.lineWidth = (this.state.PenFeatures.selectedPointerSize / 2 + 0.5) * 2;
+    contextRef.current = ctx;
+  }
+  startDrawing = (e) => {
+    if (
+      this.state.selectedComponent !== "Pen" &&
+      this.state.selectedComponent !== "Eraser"
+    ) {
+      return;
+    }
+    const { clientX, clientY } = e;
+    contextRef.current.beginPath();
+    // contextRef.current.strokeStyle = "black";
+    // contextRef.current.lineWidth = 10;
+    contextRef.current.moveTo(clientX, clientY);
+    this.setState({ isDrawing: true });
+  };
+  finishDrawing = () => {
+    if (
+      this.state.selectedComponent !== "Pen" &&
+      this.state.selectedComponent !== "Eraser"
+    ) {
+      return;
+    }
+    contextRef.current.closePath();
+    this.setState({ isDrawing: false });
+  };
+  draw = (e) => {
+    if (
+      this.state.selectedComponent !== "Pen" &&
+      this.state.selectedComponent !== "Eraser"
+    ) {
+      return;
+    }
+    if (!this.state.isDrawing) {
+      return;
+    }
+    const { clientX: screenX, clientY: screenY } = e;
+    const { view } = e;
+    const { scrollX, scrollY } = view;
+    var X = screenX + scrollX - 8;
+    var Y = screenY + scrollY - 10;
+    contextRef.current.lineTo(X, Y);
+    contextRef.current.stroke();
+  };
 
   setEraserProps = (size, symbol) => {
     this.setState(
@@ -32,12 +93,11 @@ class App extends Component {
         },
       },
       () => {
-        console.log(
-          "Eraser Size Selected--> ",
-          this.state.EraserFeatures.EraserSize,
-          "Eraser Symbol Selected--> ",
-          this.state.EraserFeatures.EraserSymbol
+        const eraserPointerSize = this.state.EraserFeatures.EraserSize.replace(
+          "rem",
+          ""
         );
+        contextRef.current.lineWidth = eraserPointerSize * 16;
       }
     );
   };
@@ -51,7 +111,18 @@ class App extends Component {
         },
       },
       () => {
-        console.log("Must Perform Something to delete everything");
+        contextRef.current.clearRect(
+          0,
+          0,
+          canvasRef.current.width,
+          canvasRef.current.height
+        );
+        this.setState({
+          EraserFeatures: {
+            ...this.state.EraserFeatures,
+            DeleteAll: false,
+          },
+        });
       }
     );
   };
@@ -65,24 +136,44 @@ class App extends Component {
         },
       },
       () => {
-        console.log(this.state.PenFeatures.selectedPenColor);
+        this.changepenFeatures();
       }
     );
   };
   setSelectedPointerSize = (value) => {
-    this.setState({
-      PenFeatures: {
-        ...this.state.PenFeatures,
-        selectedPointerSize: value,
+    this.setState(
+      {
+        PenFeatures: {
+          ...this.state.PenFeatures,
+          selectedPointerSize: value,
+        },
       },
-    });
+      () => {
+        this.changepenFeatures();
+      }
+    );
   };
 
   setHoveredHeader = (header_value) => {
     this.setState({ hoveredComponent: header_value });
   };
   setSelectedHeader = (component_selected) => {
-    this.setState({ selectedComponent: component_selected });
+    this.setState({ selectedComponent: component_selected }, () => {
+      if (this.state.selectedComponent === "Pen") {
+        contextRef.current.globalCompositeOperation = "source-over";
+        contextRef.current.strokeStyle =
+          this.state.PenFeatures.selectedPenColor;
+        contextRef.current.lineWidth =
+          (this.state.PenFeatures.selectedPointerSize / 2 + 0.5) * 2;
+      } else if (this.state.selectedComponent === "Eraser") {
+        contextRef.current.globalCompositeOperation = "destination-out";
+        const eraserPointerSize = this.state.EraserFeatures.EraserSize.replace(
+          "rem",
+          ""
+        );
+        contextRef.current.lineWidth = eraserPointerSize * 16;
+      }
+    });
   };
   setOnHover = (val) => {
     this.setState({ onHover: val });
@@ -114,13 +205,40 @@ class App extends Component {
       max: 10,
     };
     return (
-      <div className="AppComponent">
+      <div
+        className="AppComponent"
+        style={{ width: window.innerWidth, height: window.innerHeight }}
+      >
+        {" "}
+        <canvas
+          id="canvas"
+          style={{
+            position: "absolute",
+            // border: "2px solid black",
+            opacity: 0.8,
+          }}
+          width={window.innerWidth}
+          height={window.innerHeight}
+          onMouseDown={(e) => {
+            this.startDrawing(e);
+          }}
+          onMouseUp={() => {
+            this.finishDrawing();
+          }}
+          onMouseMove={(e) => {
+            this.draw(e);
+          }}
+          ref={canvasRef}
+        />
         <Header
           penColors={colors}
           stateComponents={this.state}
           setSelectedPenColor={this.setSelectedPenColor}
         />
         <ComponentPanel
+          startDrawing={this.startDrawing}
+          finishDrawing={this.finishDrawing}
+          draw={this.draw}
           componentNames={componentNames}
           onHover={this.state.onHover}
           setOnHover={this.setOnHover}

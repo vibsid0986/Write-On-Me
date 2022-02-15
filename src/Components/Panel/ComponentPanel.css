@@ -3,7 +3,7 @@
   display: flex;
   flex-wrap: wrap;
   /* background-color: rgb(250, 231, 234); */
-  background-color: rgb(217, 233, 196);
+  background-color: transparent;
   position: relative;
   top: 5rem;
   left: 1rem;
