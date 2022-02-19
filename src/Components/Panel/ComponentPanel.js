@@ -4,6 +4,7 @@ import ControlCameraIcon from "@material-ui/icons/ControlCamera";
 import TextFieldsIcon from "@material-ui/icons/TextFields";
 import PenPanel from "./PenPanel";
 import EraserPanel from "./EraserPanel";
+import SwipeIcon from "@mui/icons-material/Swipe";
 
 class ComponentPanel extends Component {
   constructor() {
@@ -154,6 +155,20 @@ class ComponentPanel extends Component {
             }}
           >
             <TextFieldsIcon fontSize="large" />
+          </div>
+          <div
+            className="item-cont"
+            onMouseEnter={() =>
+              this.setMouseHoverState(this.props.componentNames[4])
+            }
+            onMouseLeave={() =>
+              this.setMouseHoverState(this.state.selectedComponent)
+            }
+            onClick={() => {
+              this.setSelectedComponentState(this.props.componentNames[4]);
+            }}
+          >
+            <SwipeIcon fontSize="large" />
           </div>
         </div>
       </div>

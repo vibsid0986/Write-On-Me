@@ -30,7 +30,9 @@ class App extends Component {
       (this.state.PenFeatures.selectedPointerSize / 2 + 0.5) * 2;
     contextRef.current.strokeStyle = this.state.PenFeatures.selectedPenColor;
   };
+
   componentDidMount() {
+    document.body.style.overflow = "hidden";
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     // ctx.scale(2, 2);
@@ -39,19 +41,37 @@ class App extends Component {
     ctx.strokeStyle = this.state.PenFeatures.selectedPenColor;
     ctx.lineWidth = (this.state.PenFeatures.selectedPointerSize / 2 + 0.5) * 2;
     contextRef.current = ctx;
+    console.log(contextRef);
   }
+  addDot = (e) => {
+    const { clientX, clientY } = e;
+    const radius = contextRef.current.lineWidth / 2;
+    var ctx = contextRef.current;
+    ctx.beginPath();
+    ctx.arc(clientX, clientY, radius, 0, 2 * Math.PI);
+    ctx.stroke();
+    contextRef.current = ctx;
+  };
   startDrawing = (e) => {
+    // console.log(e);
     if (
       this.state.selectedComponent !== "Pen" &&
       this.state.selectedComponent !== "Eraser"
     ) {
       return;
     }
-    const { clientX, clientY } = e;
+
+    const { clientX: screenX, clientY: screenY } =
+      e.type === "mousedown" ? e : e.touches ? e.touches[0] : "";
+    const { view } = e;
+    const { scrollX, scrollY } = view;
+    var X = screenX + scrollX - 8;
+    var Y = screenY + scrollY - 10;
+    // contextRef.fillRect(screenX, screenY, , 1);
     contextRef.current.beginPath();
     // contextRef.current.strokeStyle = "black";
     // contextRef.current.lineWidth = 10;
-    contextRef.current.moveTo(clientX, clientY);
+    contextRef.current.moveTo(screenX, screenY);
     this.setState({ isDrawing: true });
   };
   finishDrawing = () => {
@@ -65,6 +85,7 @@ class App extends Component {
     this.setState({ isDrawing: false });
   };
   draw = (e) => {
+    //console.log(e);
     if (
       this.state.selectedComponent !== "Pen" &&
       this.state.selectedComponent !== "Eraser"
@@ -74,12 +95,13 @@ class App extends Component {
     if (!this.state.isDrawing) {
       return;
     }
-    const { clientX: screenX, clientY: screenY } = e;
-    const { view } = e;
-    const { scrollX, scrollY } = view;
-    var X = screenX + scrollX - 8;
-    var Y = screenY + scrollY - 10;
-    contextRef.current.lineTo(X, Y);
+    const { clientX: screenX, clientY: screenY } =
+      e.type === "mousemove" ? e : e.touches ? e.touches[0] : "";
+    // const { view } = e;
+    // const { scrollX, scrollY } = view;
+    // var X = screenX + scrollX - 8;
+    // var Y = screenY + scrollY - 10;
+    contextRef.current.lineTo(screenX, screenY);
     contextRef.current.stroke();
   };
 
@@ -180,7 +202,7 @@ class App extends Component {
   };
 
   render() {
-    const componentNames = ["Select", "Pen", "Eraser", "Text"];
+    const componentNames = ["Select", "Pen", "Eraser", "Text", "Scroll"];
     const colors = ["red", "green", "gold", "blue", "black"];
     const eraserSizes = {
       Small: {
@@ -207,7 +229,10 @@ class App extends Component {
     return (
       <div
         className="AppComponent"
-        style={{ width: window.innerWidth, height: window.innerHeight }}
+        style={{
+          width: window.innerWidth,
+          height: window.innerHeight,
+        }}
       >
         {" "}
         <canvas
@@ -219,6 +244,31 @@ class App extends Component {
           }}
           width={window.innerWidth}
           height={window.innerHeight}
+          onClick={(e) => {
+            console.log(e);
+            this.addDot(e);
+          }}
+          onTouchStart={(e) => {
+            if (e.pointerType === "mouse") {
+              return;
+            }
+            // console.log(e);
+            this.startDrawing(e);
+          }}
+          onTouchEnd={(e) => {
+            if (e.pointerType === "mouse") {
+              return;
+            }
+            // console.log(e);
+            this.finishDrawing();
+          }}
+          onTouchMove={(e) => {
+            if (e.pointerType === "mouse") {
+              return;
+            }
+            // console.log(e);
+            this.draw(e);
+          }}
           onMouseDown={(e) => {
             this.startDrawing(e);
           }}

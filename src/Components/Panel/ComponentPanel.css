@@ -12,7 +12,9 @@
 }
 .item-cont {
   position: relative;
-  cursor: pointer;
+  /* cursor: pointer; */
+  cursor: url("../../../images/png-transparent-ballpoint-pen-stylus-fountain-pen-waterman-pens-pen-pen-advertising-rollerball-pen-thumbnail.png"),
+    pointer;
   display: inline-block;
   background-color: rgb(190, 207, 167);
   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px,
