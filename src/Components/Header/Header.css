@@ -12,6 +12,20 @@
     rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
     rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset; */
 }
+.current-element-hovered {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: cursive;
+}
+.unselectable {
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .current-element-selected {
   position: relative;
 

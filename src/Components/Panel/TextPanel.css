@@ -1,0 +1,17 @@
+.writable {
+  top: 10rem;
+  left: 10rem;
+  position: absolute;
+  background-color: yellow;
+  font-size: 48px;
+  font-family: serif;
+  width: auto;
+  min-width: 30px;
+  height: auto;
+}
+.style-textarea {
+  background-color: transparent;
+  border-color: transparent;
+  text-align: left;
+  resize: none;
+}

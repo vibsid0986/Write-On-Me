@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Header from "./Header/Header";
 import ComponentPanel from "./Panel/ComponentPanel";
 import "./App.css";
+import TextPanel from "./Panel/TextPanel";
 
 const canvasRef = React.createRef(null);
 const contextRef = React.createRef(null);
@@ -10,9 +11,12 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      doubleClickEvent: false,
       onHover: false,
-      hoveredComponent: "Select",
-      selectedComponent: "Select",
+      isDoubleClicked: true,
+      isHoveringAllowed: true,
+      hoveredComponent: "Cursor",
+      selectedComponent: "Cursor",
       PenFeatures: {
         selectedPenColor: "black",
         selectedPointerSize: 2,
@@ -25,6 +29,30 @@ class App extends Component {
       isDrawing: false,
     };
   }
+
+  uploadImageData = (e) => {
+    console.log(e);
+    e.preventDefault();
+    const fileSelector = (
+      <input type="file" name="file" sayHi={onchange()}>
+        assss
+      </input>
+    );
+    console.log(fileSelector);
+    return fileSelector;
+  };
+
+  downloadImageData = () => {
+    const image = canvasRef.current.toDataURL();
+    //console.log(image);
+    const tempLink = document.createElement("a");
+    tempLink.download = "image.png";
+    tempLink.href = image;
+
+    document.body.appendChild(tempLink);
+    tempLink.click();
+    document.body.removeChild(tempLink);
+  };
   changepenFeatures = () => {
     contextRef.current.lineWidth =
       (this.state.PenFeatures.selectedPointerSize / 2 + 0.5) * 2;
@@ -36,12 +64,14 @@ class App extends Component {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     // ctx.scale(2, 2);
+    //var img = document.getElementById("meow");
+    // ctx.drawImage(img, 10, 10);
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
+    ctx.font = "48px serif";
     ctx.strokeStyle = this.state.PenFeatures.selectedPenColor;
     ctx.lineWidth = (this.state.PenFeatures.selectedPointerSize / 2 + 0.5) * 2;
     contextRef.current = ctx;
-    console.log(contextRef);
   }
   addDot = (e) => {
     const { clientX, clientY } = e;
@@ -71,7 +101,7 @@ class App extends Component {
     contextRef.current.beginPath();
     // contextRef.current.strokeStyle = "black";
     // contextRef.current.lineWidth = 10;
-    contextRef.current.moveTo(screenX, screenY);
+    contextRef.current.moveTo(X, Y);
     this.setState({ isDrawing: true });
   };
   finishDrawing = () => {
@@ -97,11 +127,11 @@ class App extends Component {
     }
     const { clientX: screenX, clientY: screenY } =
       e.type === "mousemove" ? e : e.touches ? e.touches[0] : "";
-    // const { view } = e;
-    // const { scrollX, scrollY } = view;
-    // var X = screenX + scrollX - 8;
-    // var Y = screenY + scrollY - 10;
-    contextRef.current.lineTo(screenX, screenY);
+    const { view } = e;
+    const { scrollX, scrollY } = view;
+    var X = screenX + scrollX - 8;
+    var Y = screenY + scrollY - 10;
+    contextRef.current.lineTo(X, Y);
     contextRef.current.stroke();
   };
 
@@ -195,14 +225,34 @@ class App extends Component {
         );
         contextRef.current.lineWidth = eraserPointerSize * 16;
       }
+      if (
+        this.state.selectedComponent === "Eraser" ||
+        this.state.selectedComponent === "Pen"
+      ) {
+        this.setState({ isHoveringAllowed: false });
+      }
     });
   };
   setOnHover = (val) => {
     this.setState({ onHover: val });
   };
-
+  drawDataURIOnCanvas = (strDataURI, canvas) => {
+    var img = new window.Image();
+    img.addEventListener("load", function () {
+      canvas.getContext("2d").drawImage(img, 0, 0);
+    });
+    img.setAttribute("src", strDataURI);
+  };
   render() {
-    const componentNames = ["Select", "Pen", "Eraser", "Text", "Scroll"];
+    const componentNames = [
+      "Cursor",
+      "Pen",
+      "Eraser",
+      "Text",
+      "Scroll",
+      "Upload",
+      "Download",
+    ];
     const colors = ["red", "green", "gold", "blue", "black"];
     const eraserSizes = {
       Small: {
@@ -234,7 +284,13 @@ class App extends Component {
           height: window.innerHeight,
         }}
       >
-        {" "}
+        {/* <img
+          id="meow"
+          alt="cat"
+          height={12}
+          width={10}
+          src="https://rukminim2.flixcart.com/image/416/416/k3j1z0w0/sticker/t/h/2/white-glossy-modern-art572-large-61-white-glossy-modern-art572-original-imafmhf5mzjqyyzh.jpeg?q=70"
+        />{" "} */}
         <canvas
           id="canvas"
           style={{
@@ -244,10 +300,10 @@ class App extends Component {
           }}
           width={window.innerWidth}
           height={window.innerHeight}
-          onClick={(e) => {
-            console.log(e);
-            this.addDot(e);
-          }}
+          // onClick={(e) => {
+          //   console.log(e);
+          //   this.addDot(e);
+          // }}
           onTouchStart={(e) => {
             if (e.pointerType === "mouse") {
               return;
@@ -278,8 +334,21 @@ class App extends Component {
           onMouseMove={(e) => {
             this.draw(e);
           }}
+          onDoubleClick={(e) => {
+            this.setState({ isDoubleClicked: !this.state.isDoubleClicked });
+            this.setState({ doubleClickEvent: e });
+          }}
           ref={canvasRef}
         />
+        {this.state.isDoubleClicked ? (
+          <TextPanel
+            doubleClickEvent={this.state.doubleClickEvent}
+            canvasRef={canvasRef}
+            contextRef={contextRef}
+          />
+        ) : (
+          ""
+        )}
         <Header
           penColors={colors}
           stateComponents={this.state}
@@ -303,6 +372,9 @@ class App extends Component {
           setEraseAll={this.setEraseAll}
           setEraserProps={this.setEraserProps}
           eraserSizes={eraserSizes}
+          isHoveringAllowed={this.state.isHoveringAllowed}
+          downloadImageData={this.downloadImageData}
+          uploadImageData={this.uploadImageData}
         />
       </div>
     );

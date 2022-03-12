@@ -15,12 +15,13 @@ class Header extends Component {
 
     return (
       <div className="header-container">
-        <div className="header-options">
+        <div className="header-options unselectable">
           <MenuIcon className="menu-button" fontSize="inherit" />
-          <p className={`current-element-selected  ${onHover ? "" : "glow"}`}>
-            {onHover
-              ? this.props.stateComponents.hoveredComponent
-              : this.props.stateComponents.selectedComponent}
+          <p className={`current-element-selected`}>
+            {this.props.stateComponents.selectedComponent}
+          </p>
+          <p className={`current-element-hovered ${onHover ? "glow" : ""}`}>
+            {onHover ? this.props.stateComponents.hoveredComponent : ""}
           </p>
         </div>
       </div>
